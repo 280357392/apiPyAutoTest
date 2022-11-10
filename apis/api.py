@@ -15,9 +15,9 @@ class Api(object):
     def _set_headers(self, **kwargs):
         """
         构建请求头，在原有的基础上更新或新增请求头。\n
+        值不允许是int类型。\n
         调用方式:\n
-            new_headers = {'key': 'value'} \n
-            set_headers(**new_headers) \n
+            set_headers(**{'key': 'value'}) \n
             set_headers(token='123456') \n
         """
         self._headers.update(kwargs)
@@ -72,20 +72,35 @@ class Api(object):
         """
         return self._response.status_code
 
-    def print_json_text(self) -> str:
+    def get_json_text(self) -> str:
         """
-        打印获取响应的内容。
+        获取响应的内容。
         """
-        print(json.dumps(self._response.json(), indent=2, ensure_ascii=False))
+        return json.dumps(self._response.json(), indent=2, ensure_ascii=False)
 
-    def get_headers(self):
+    def get_response_headers(self):
         """
         获取响应头。
         """
         return self._response.headers
 
-    def print_url(self):
+    def get_request_headers(self):
+        """
+        获取请求头。
+        """
+        return self._response.request.headers
+
+    def get_url(self):
         """
         获取url
         """
+        return self._response.url
+
+    def print_info(self):
+        """
+        打印数据
+        """
+        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈URL✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
         print(self._response.url)
+        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈RESPONSE_BODY✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
+        print(self._response.text)

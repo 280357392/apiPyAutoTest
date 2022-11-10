@@ -10,10 +10,10 @@ class TestSignInApi(object):
 
     @pytest.mark.parametrize(
         'city,status',  # 列
-        parse_csv('test_login.csv'),
+        parse_csv('test_search.csv'),
         ids=[  # 行
-            '1.搜索存在的城市。',
-            '2.搜索不存在的城市。',
+            '1.输入正确的参数（存在的城市），应返回正确的数据。',
+            '2.输入错误的参数（不存在的城市），应返回正确的错误提示。',
         ]
     )
     # @pytest.mark.skipif(RunConfig.debug, reason="debug模式跳过用例")
@@ -21,25 +21,22 @@ class TestSignInApi(object):
         """
         搜索某个城市的天气
         预期：
-        1.搜索存在的城市，返回正确的数据。
-        2.搜索不存在的城市，返回错误提示。
+        1.输入正确的参数（存在的城市），应返回正确的数据。
+        2.输入错误的参数（不存在的城市），应返回正确的错误提示。
         """
         api = SigInApi(city)
+
+        # 以有效参数进行测试
         if status == '1':
-            # 以有效城市进行搜索
-            api.print_url()
-            print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-            api.print_json_text()
+            api.print_info()
             assert 200 == api.get_status_code()
             assert city == api.get_city()
             assert api.get_data()
-        # hamcrest 第三方断言库。
+            # hamcrest 第三方断言库。
 
+        # 以无效参数进行测试
         if status == '0':
-            # 以失效城市进行搜索。
-            api.print_url()
-            print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-            api.print_json_text()
+            api.print_info()
             assert 200 == api.get_status_code()
             assert 1001 == api.get_errcode(), f'期望errcode的值为：1001，实际errcode的值为：{api.get_errcode()}'
 
