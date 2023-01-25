@@ -1,5 +1,7 @@
 import pytest
 from py.xml import html
+from apis.order_1_home.log_api import LogApi
+from config import RunConfig
 
 
 def pytest_html_report_title(report):
@@ -15,7 +17,8 @@ def pytest_configure(config):
     config._metadata["运行环境信息"] = "自动化测试环境"
 
 
-@pytest.mark.optionalhook
+# @pytest.mark.optionalhook
+@pytest.hookimpl(optionalhook=True)
 def pytest_html_results_summary(prefix):
     prefix.extend([html.p("所属部门: 测试中心")])
     prefix.extend([html.p("测试人员: 蒙伟")])
@@ -32,18 +35,18 @@ def pytest_html_results_table_row(report, cells):
     cells.insert(2, html.td(report.description))
     cells.pop()  # 移除links
 
-
-def pytest_collection_modifyitems(items):
+    # def pytest_collection_modifyitems(items):
     """
     测试用例收集完成时，将收集到的name和nodeid的中文显示在控制台上
     解决终端日志中文乱码
     """
-    for i in items:
-        i.name = i.name.encode("utf-8").decode("unicode_escape")
-        i._nodeid = i.nodeid.encode("utf-8").decode("unicode_escape")
+    # for i in items:
+    #     i.name = i.name.encode("utf-8").decode("unicode_escape")
+    #     i._nodeid = i.nodeid.encode("utf-8").decode("unicode_escape")
 
 
-@pytest.mark.hookwrapper
+# @pytest.mark.hookwrapper
+@pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item):
     """
     用于向测试用例中添加用例的开始时间、内部注释，和失败截图等.
@@ -65,7 +68,7 @@ def pytest_runtest_makereport(item):
         # ...
     report.extra = extra
     # 再把编码改回来，解决报告中文乱码问题。
-    report.nodeid = report.nodeid.encode("unicode_escape").decode("utf-8")
+    # report.nodeid = report.nodeid.encode("unicode_escape").decode("utf-8")
 
 
 def description_html(desc):
@@ -92,3 +95,19 @@ def description_html(desc):
         html.body(
             [html.p(line) for line in desc_lines]))
     return desc_html
+
+
+@pytest.fixture(scope='session', autouse=True)
+def start():
+    # print('测试开始---------->')
+    # 测试开始前执行一次
+    RunConfig.token = str(LogApi('四川').get_token())
+    yield
+
+
+@pytest.fixture(scope="session", autouse=True)
+def stop():
+    yield
+    # print(RunConfig.token)
+    # 执行退出登录操作
+    # print('测试结束---------->')

@@ -1,12 +1,15 @@
 from config import RunConfig
 import requests
 import json
-
+from urllib.parse import unquote
 
 class Api(object):
 
     def __init__(self):
         self._base_url = RunConfig.base_url
+        self._token = RunConfig.token
+        # _response将被子类重写。
+        self._response = None
         self._headers = {
             'Content-Type': 'application/json;',
             'User-Agent': 'Mozilla/5.0'
@@ -78,6 +81,12 @@ class Api(object):
         """
         return json.dumps(self._response.json(), indent=2, ensure_ascii=False)
 
+    def get_text(self) -> str:
+        """
+        获取响应的内容。
+        """
+        return self._response.text
+
     def get_response_headers(self):
         """
         获取响应头。
@@ -98,9 +107,16 @@ class Api(object):
 
     def print_info(self):
         """
-        打印数据
+        打印数据，格式：
+        GET url
+        headers: {...}
+        body:
+        None
+        {.....}
         """
-        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈URL✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-        print(self._response.url)
-        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈RESPONSE_BODY✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
+        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈request✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
+        print('{}\r\nheaders: {}\r\nbody:\r\n{}'.format(
+            self._response.request.method + ' ' + unquote(self._response.request.url),
+            self._response.request.headers, self._response.request.body))
+        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈response✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
         print(self._response.text)

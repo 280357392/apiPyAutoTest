@@ -6,19 +6,20 @@ class RunConfig:
     配置信息
     """
 
-    debug = True
+    debug = False
     """等于True时表示调试模式，将跳过全部用例。"""
 
     skip_module = [
-        # '_1_home',
+        # 'order_1_home',
     ]
     """跳过的模块"""
 
     base_url = u"https://v0.yiketianqi.com"
 
     token = ''
+    """供需要的所有接口使用"""
 
-    cases_path = str(Path.cwd() / 'test_cases')
+    cases_path = str(Path.cwd() / 'case')
     """测试用例的目录路径"""
 
     rerun = "0"
@@ -28,4 +29,4 @@ class RunConfig:
     """当达到最大失败数，停止执行"""
 
     new_report = ""
-    """测试报告目录（默认test_report，此处配置无效，无需修改"""
+    """测试报告目录（默认report，此处配置无效，无需修改"""

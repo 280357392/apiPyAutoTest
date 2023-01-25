@@ -1,22 +1,31 @@
 import pytest
 from config import RunConfig
-from apis._1_home.sign_in_api import SigInApi
+from apis.order_1_home.sign_in_api import SigInApi
 from common.parse_data import parse_csv
 
 
-@pytest.mark.skipif('_1_home' in RunConfig.skip_module, reason="跳过的模块")
+@pytest.mark.skipif('order_1_home' in RunConfig.skip_module, reason="跳过的模块")
 @pytest.mark.run(order=1)
 class TestSignInApi(object):
+    """
+    用例之间不允许相互依赖。
+    用例执行顺序是按方法定义的顺序决定的，跟名称无关。
+    """
 
     @pytest.mark.parametrize(
-        'city,status',  # 列
-        parse_csv('test_search.csv'),
-        ids=[  # 行
+        'city,status',  # 2列
+        # parse_csv('test_search.csv'),
+        # 2行
+        [
+            ('广州', '1'),
+            ('四川', '0')
+        ],
+        ids=[  # 2行提示信息
             '1.输入正确的参数（存在的城市），应返回正确的数据。',
             '2.输入错误的参数（不存在的城市），应返回正确的错误提示。',
         ]
     )
-    # @pytest.mark.skipif(RunConfig.debug, reason="debug模式跳过用例")
+    @pytest.mark.skipif(RunConfig.debug, reason="debug模式时跳过用例")
     def test_search(self, city, status):
         """
         搜索某个城市的天气
@@ -31,7 +40,7 @@ class TestSignInApi(object):
             api.print_info()
             assert 200 == api.get_status_code()
             assert city == api.get_city()
-            assert api.get_data()
+            assert api.get_data('data')
             # hamcrest 第三方断言库。
 
         # 以无效参数进行测试
