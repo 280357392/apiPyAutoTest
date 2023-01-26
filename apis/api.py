@@ -1,7 +1,9 @@
+from common.pring_info import print_reques
 from config import RunConfig
 import requests
 import json
 from urllib.parse import unquote
+
 
 class Api(object):
 
@@ -114,9 +116,19 @@ class Api(object):
         None
         {.....}
         """
-        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈request✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-        print('{}\r\nheaders: {}\r\nbody:\r\n{}'.format(
-            self._response.request.method + ' ' + unquote(self._response.request.url),
-            self._response.request.headers, self._response.request.body))
-        print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈response✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-        print(self._response.text)
+        if RunConfig.debug:
+            # 调试模式
+            print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈request✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
+            print('{}\r\nheaders: {}\r\nbody:\r\n{}'.format(
+                self._response.request.method + ' ' + unquote(self._response.request.url),
+                self._response.request.headers, self._response.request.body))
+            print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈response✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
+            print(self._response.text)
+        else:
+            picnic_items = {
+                'url:': unquote(self._response.request.url),
+                'method:': self._response.request.method,
+                'request_headers:': str(self._response.request.headers)[0:100] + "...",
+                'request_body:': str(self._response.request.body)[0:100] + "...",
+                'response_body:': self._response.text[0:100] + "..."}
+            print_reques(picnic_items, 27, 60)

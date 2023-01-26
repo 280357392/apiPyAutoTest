@@ -101,7 +101,7 @@ def description_html(desc):
 def start():
     # print('测试开始---------->')
     # 测试开始前执行一次
-    RunConfig.token = str(LogApi('四川').get_token())
+    RunConfig.token = str(LogApi('username','pwd').get_token())
     yield
 
 

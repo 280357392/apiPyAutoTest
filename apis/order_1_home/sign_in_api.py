@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # api = SigInApi('北京',token1='123456',token2='789') # 添加请求头方式1。
     # api = SigInApi('北京', **{'token2': '333', 'token4': '444'}) # # 添加请求头方式2。
     # print(api.get_status_code())  # 获取响应状态码,200
-    print(api.get_request_headers()) # 打印请求头
+    # print(str(api.get_request_headers())) # 打印请求头
     # print(api.get_response_headers())  # 打印响应头
     # print(api.get_city())  # 获取指定数据1
     # print(api.get_data('data')) # 获取指定数据2
@@ -51,4 +51,5 @@ if __name__ == '__main__':
     # print(api.get_json_text()) # 打印响应内容（json格式）
     # print(api.get_url()) # 打印url
     # print(api._response.request.headers)
+    # print(type(api._response.request.body))
     pass

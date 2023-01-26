@@ -29,8 +29,12 @@ class LogApi(Api):
 
 if __name__ == '__main__':
     api = LogApi('zs123', '123456')
-    print(api._response.request.headers)
+    # print(api._response.request.headers)
     # print(api._response.request.body)
     # print(api.get_token())
     # print(type(api.get_token()))
+    # print(type(api._response.request.body))
+    # print(str(api._response.request.body))
+    # print(api._response.request.body.decode())# 为空报错
+    # print(str(api._response.request.body))
     pass
