@@ -1,75 +1,21 @@
-from common.pring_info import print_reques
-from config import RunConfig
-import requests
 import json
 from urllib.parse import unquote
 
+import requests
 
-class Api(object):
+from config import RunConfig
+from common.pring_info import print_reques
+
+
+class ApiBase:
+    """
+        api公共方法
+    """
 
     def __init__(self):
-        self._base_url = RunConfig.base_url
-        self._token = RunConfig.token
-        # _response将被子类重写。
-        self._response = None
-        self._headers = {
-            'Content-Type': 'application/json;',
-            'User-Agent': 'Mozilla/5.0'
-        }
-
-    def _set_headers(self, **kwargs):
-        """
-        构建请求头，在原有的基础上更新或新增请求头。\n
-        值不允许是int类型。\n
-        调用方式:\n
-            set_headers(**{'key': 'value'}) \n
-            set_headers(token='123456') \n
-        """
-        self._headers.update(kwargs)
-
-    def _get(self, url, params=None, headers=None, auth=None, timeout=10) -> requests.Response:
-        """
-        get请求。
-        """
-        if headers is None:
-            headers = self._headers
-
-        return requests.get(
-            url=url,
-            params=params,
-            headers=headers,
-            auth=auth,
-            timeout=timeout,
-        )
-
-    def _post(self, url, data, headers=None, auth=None, timeout=10) -> requests.Response:
-        """
-        post请求。
-        """
-        if headers is None:
-            headers = self._headers
-
-        return requests.post(
-            url=url,
-            json=data,
-            headers=headers,
-            auth=auth,
-            timeout=timeout,
-        )
-
-    def _upload(self, url, file, headers=None) -> requests.Response:
-        """
-        上传文件。\n
-        """
-        if headers is None:
-            headers = self._headers
-        return requests.post(
-            url=url,
-            headers=headers,
-            files={
-                "file": ('wx.jpg', open(file, 'rb'), "image/jpeg", {})
-            },
-        )
+        self.base_url = RunConfig.base_url
+        self.token = RunConfig.token
+        self._response: requests.Response = None
 
     def get_status_code(self) -> int:
         """

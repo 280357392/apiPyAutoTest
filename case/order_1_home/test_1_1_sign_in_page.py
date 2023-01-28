@@ -1,7 +1,7 @@
 import pytest
-
-from apis.order_1_home.log_api import LogApi
 from config import RunConfig
+from apis.controller.api_controller_v1 import ApiControllerV1
+from apis.order_1_home.log_api import LogApi
 from apis.order_1_home.sign_in_api import SigInApi
 from common.parse_data import parse_csv
 
@@ -20,7 +20,7 @@ class TestOrder1Home(object):
         # 2行
         [
             ('广州', '1'),
-            ('四川', '0')
+            ('美国', '0')
         ],
         ids=[  # 2行提示信息
             '1.输入正确的参数（存在的城市），应返回正确的数据。',
@@ -35,7 +35,7 @@ class TestOrder1Home(object):
         1.输入正确的参数（存在的城市），应返回正确的数据。
         2.输入错误的参数（不存在的城市），应返回正确的错误提示。
         """
-        api = SigInApi(city)
+        api = SigInApi(ApiControllerV1(), city)
 
         # 以有效参数进行测试
         if status == '1':
@@ -50,13 +50,11 @@ class TestOrder1Home(object):
             api.print_info()
             assert 200 == api.get_status_code()
             assert 1001 == api.get_errcode(), f'期望errcode的值为：1001，实际errcode的值为：{api.get_errcode()}'
-
         pass
 
     @pytest.mark.skipif(RunConfig.debug, reason="debug模式时跳过用例")
     def test_log_api(self):
-        api = LogApi('zs123', '123456')  # 必须
+        api = LogApi(ApiControllerV1(), 'zs123', '123456')  # 必须
         api.print_info()  # 必须
-        assert 200 == api.get_status_code()  # 必须
+        assert 1001 == api.get_errcode(), f'期望errcode的值为：1001，实际errcode的值为：{api.get_errcode()}'
         pass
-

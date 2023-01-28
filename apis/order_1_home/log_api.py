@@ -1,40 +1,49 @@
 import json
+from apis.controller.api_controller_base import ApiControllerBase
+from apis.controller.api_controller_v1 import ApiControllerV1
+from apis.api_base import ApiBase
+from apis.api_info import ApiInfo
 
-from apis.api import Api
-from apis.urls import Urls
 
+class LogApi(ApiBase):
 
-class LogApi(Api):
-
-    def __init__(self, username, pwd, **kwargs):
+    def __init__(self, api_controller, username, pwd, **kwargs):
         super().__init__()
-        self._set_headers(**kwargs)
-        self._set_headers(**Urls.log_api['headers'])
-        self.__send_request(username, pwd)
+        self.__set_headers(api_controller, **kwargs)
+        self.__set_headers(api_controller, **ApiInfo.log_api['headers'])
+        self.__send_request(api_controller, username, pwd)
+
+    def __set_headers(self, api_controller, **kwargs):
+        """
+        设置请求头
+        """
+        if isinstance(api_controller, ApiControllerBase):
+            api_controller.set_headers(**kwargs)
+        else:
+            raise ValueError(api_controller.__class__.__name__, '必须是ApiControllerBase类的子类。')
 
     def __get_url(self):
-        url = Urls.log_api['url']
-        return ''.join([self._base_url, url])
+        """
+            拼接字符串
+        """
+        url = ApiInfo.log_api['url']
+        return ''.join([self.base_url, url])
 
     def __get_data(self, username, pwd):
-        data = Urls.log_api['data'] % (username, pwd)
+        data = ApiInfo.log_api['data'] % (username, pwd)
         return json.loads(data)
 
-    def __send_request(self, username, pwd):
-        self._response = self._post(url=self.__get_url(), data=self.__get_data(username, pwd))
+    def __send_request(self, api_controller, username, pwd):
+        self._response = api_controller.post(url=self.__get_url(), data=self.__get_data(username, pwd))
 
     def get_token(self):
         return self._response.json().get('token')
 
+    def get_errcode(self) -> int:
+        return self._response.json().get('errcode')
+
 
 if __name__ == '__main__':
-    api = LogApi('zs123', '123456')
-    # print(api._response.request.headers)
-    # print(api._response.request.body)
-    # print(api.get_token())
-    # print(type(api.get_token()))
-    # print(type(api._response.request.body))
-    # print(str(api._response.request.body))
-    # print(api._response.request.body.decode())# 为空报错
-    # print(str(api._response.request.body))
+    api = LogApi(ApiControllerV1(), 'zs123', '123456')
+    print(api.get_text())
     pass

@@ -1,4 +1,4 @@
-class Urls:
+class ApiInfo:
     sig_in_api = {
         'module': 'order_1_home',
         'title': '某某接口',

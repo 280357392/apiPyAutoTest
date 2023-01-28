@@ -1,5 +1,7 @@
 import pytest
 from py.xml import html
+
+from apis.controller.api_controller_v1 import ApiControllerV1
 from apis.order_1_home.log_api import LogApi
 from config import RunConfig
 
@@ -101,7 +103,8 @@ def description_html(desc):
 def start():
     # print('测试开始---------->')
     # 测试开始前执行一次
-    RunConfig.token = str(LogApi('username','pwd').get_token())
+    # 测试开始前获取token
+    RunConfig.token = str(LogApi(ApiControllerV1(),'username','pwd').get_token())
     yield
 
 
