@@ -104,7 +104,7 @@ def start():
     # print('测试开始---------->')
     # 测试开始前执行一次
     # 测试开始前获取token
-    RunConfig.token = str(LogApi(ApiControllerV1(),'username','pwd').get_token())
+    RunConfig.token = str(LogApi('username', 'pwd').get_token())
     yield
 
 

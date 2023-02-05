@@ -6,16 +6,17 @@ from apis.controller.api_controller_v1 import ApiControllerV1
 
 class SigInApi(ApiBase):
 
-    def __init__(self, api_controller, city, **kwargs):
+    def __init__(self, city, **kwargs):
         """
         1.设置接口请求头。
         2.发送接口请求。
         """
         super().__init__()
-        self.__set_headers(api_controller, **kwargs)
-        self.__set_headers(api_controller, **ApiInfo.sig_in_api['headers'])
-        self.__set_headers(api_controller, token=self.token)
-        self.__send_request(api_controller, city)
+        self.api_controller = ApiControllerV1()
+        self.__set_headers(self.api_controller, **kwargs)
+        self.__set_headers(self.api_controller, **ApiInfo.sig_in_api['headers'])
+        self.__set_headers(self.api_controller, token=self.token)
+        self.__send_request(self.api_controller, city)
 
     def __set_headers(self, api_controller, **kwargs):
         """
@@ -50,7 +51,7 @@ class SigInApi(ApiBase):
 
 
 if __name__ == '__main__':
-    api = SigInApi(ApiControllerV1(), '北京')  # 设置参数，使用默认请求头发送请求。
+    api = SigInApi('北京')  # 设置参数，使用默认请求头发送请求。
     # api = SigInApi(ApiControllerV1(), '北京', token1='123456', token2='789')  # 添加请求头方式1。
     # api = SigInApi(ApiControllerV1(), '北京', **{'token2': '333', 'token4': '444'})  # # 添加请求头方式2。
     # print(api.get_status_code())  # 获取响应状态码,200

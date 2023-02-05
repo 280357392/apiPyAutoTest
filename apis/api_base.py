@@ -1,8 +1,7 @@
 import json
-from urllib.parse import unquote
-
 import requests
-
+from urllib.parse import unquote
+from common.mysql_db import MysqlDB
 from config import RunConfig
 from common.pring_info import print_reques
 
@@ -62,12 +61,17 @@ class ApiBase:
         None
         {.....}
         """
+        request_body = self._response.request.body
+        if type(request_body) == bytes:
+            request_body = str(request_body, 'utf-8').encode('utf-8').decode('unicode_escape')
+        else:
+            request_body = str(request_body).encode('utf-8').decode('unicode_escape')
         if RunConfig.debug:
             # 调试模式
             print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈request✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
-            print('{}\r\nheaders: {}\r\nbody:\r\n{}'.format(
+            print('{}\r\nrequest_headers: {}\r\nrequest_body: {}'.format(
                 self._response.request.method + ' ' + unquote(self._response.request.url),
-                self._response.request.headers, self._response.request.body))
+                self._response.request.headers, request_body))
             print('✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈response✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈✈')
             print(self._response.text)
         else:
@@ -75,6 +79,28 @@ class ApiBase:
                 'url:': unquote(self._response.request.url),
                 'method:': self._response.request.method,
                 'request_headers:': str(self._response.request.headers)[0:100] + "...",
-                'request_body:': str(self._response.request.body)[0:100] + "...",
+                'request_body:': request_body[0:100] + "...",
                 'response_body:': self._response.text[0:100] + "..."}
             print_reques(picnic_items, 27, 60)
+
+    @staticmethod
+    def read_data(sql, args=None):
+        """
+        查询数据库
+        :return: 查询成功时返回一列数据（元组），否则报错。
+        """
+        db = MysqlDB()
+        data = db.retrieve(sql, args)
+        db.close_db()
+        if data:
+            return data
+        else:
+            assert False, '数据库未查询到相关数据。'
+
+
+if __name__ == '__main__':
+    # data = ApiBase.read_data("select classid,name from student where classid = %s;", [13])
+    # print(data)
+    # print(str(b'{"username": "13", "pwd": "\\u8d75\\u516d"}','utf-8').encode('utf-8').decode('unicode_escape'))
+    # print(str('{"username": "13", "pwd": "\\u8d75\\u516d"}').encode('utf-8').decode('unicode_escape'))
+    pass

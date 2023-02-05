@@ -7,11 +7,12 @@ from apis.api_info import ApiInfo
 
 class LogApi(ApiBase):
 
-    def __init__(self, api_controller, username, pwd, **kwargs):
+    def __init__(self, username, pwd, **kwargs):
         super().__init__()
-        self.__set_headers(api_controller, **kwargs)
-        self.__set_headers(api_controller, **ApiInfo.log_api['headers'])
-        self.__send_request(api_controller, username, pwd)
+        self.api_controller = ApiControllerV1()
+        self.__set_headers(self.api_controller, **kwargs)
+        self.__set_headers(self.api_controller, **ApiInfo.log_api['headers'])
+        self.__send_request(self.api_controller, username, pwd)
 
     def __set_headers(self, api_controller, **kwargs):
         """
@@ -30,6 +31,9 @@ class LogApi(ApiBase):
         return ''.join([self.base_url, url])
 
     def __get_data(self, username, pwd):
+        """
+            返回字典
+        """
         data = ApiInfo.log_api['data'] % (username, pwd)
         return json.loads(data)
 
@@ -44,6 +48,6 @@ class LogApi(ApiBase):
 
 
 if __name__ == '__main__':
-    api = LogApi(ApiControllerV1(), 'zs123', '123456')
+    api = LogApi('zs123', '123456')
     print(api.get_text())
     pass
