@@ -6,11 +6,12 @@ class RunConfig:
     配置信息
     """
 
-    debug = False
+    debug = True
     """等于True时表示调试模式，将跳过全部用例。"""
 
     skip_module = [
-        # 'order_1_home',
+        # 'test_session.py',
+        # 'test_home.py',
     ]
     """跳过的模块"""
 

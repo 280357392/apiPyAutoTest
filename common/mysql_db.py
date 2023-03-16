@@ -19,11 +19,11 @@ print(all_row)  # ((14, '110班'),)
 
 class MysqlDB:
     def __init__(self):
-        # 创建连接
-        self.__db = pymysql.connect(host='114.132.123.103',
+        # 创建连接（需测试连接失败的情况）
+        self.__db = pymysql.connect(host='114.132.123.-snip-',
                                     port=3306,
-                                    user='',
-                                    password='',
+                                    user='-snip-',
+                                    password='-snip-.',
                                     database='mydb',
                                     charset='utf8mb4'
                                     )
@@ -51,10 +51,11 @@ class MysqlDB:
 
     def retrieve(self, sql, args=None):
         """
-            数据库查询
+        数据库查询。
+
         :param sql: 查询语句
-        :param args: [values|value]
-        :return: 二维元组
+        :param args: 条件列表[]
+        :return: 一维元组
         """
         # sql = "select classid,name from student where classid = %s;"
         self.__cur.execute(sql, args)  # 只能给values或条件等传值，不能给表名传值。

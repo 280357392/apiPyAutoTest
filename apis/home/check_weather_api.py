@@ -1,10 +1,10 @@
-from apis.api_base import ApiBase
-from apis.api_info import ApiInfo
-from apis.controller.api_controller_base import ApiControllerBase
-from apis.controller.api_controller_v1 import ApiControllerV1
+from apis.base_api import BaseApi
+from apis.api_info import Home
+from ..base_controller import BaseController
+from ..v1_controller import V1Controller
 
 
-class SigInApi(ApiBase):
+class CheckWeatherApi(BaseApi):
 
     def __init__(self, city, **kwargs):
         """
@@ -12,26 +12,26 @@ class SigInApi(ApiBase):
         2.发送接口请求。
         """
         super().__init__()
-        self.api_controller = ApiControllerV1()
-        self.__set_headers(self.api_controller, **kwargs)
-        self.__set_headers(self.api_controller, **ApiInfo.sig_in_api['headers'])
-        self.__set_headers(self.api_controller, token=self.token)
-        self.__send_request(self.api_controller, city)
+        self.controller = V1Controller()
+        self.__set_headers(self.controller, **kwargs)
+        self.__set_headers(self.controller, **Home.check_weather['headers'])
+        self.__set_headers(self.controller, token=self.token)
+        self.__send_request(self.controller, city)
 
-    def __set_headers(self, api_controller, **kwargs):
+    def __set_headers(self, controller, **kwargs):
         """
         设置请求头
         """
-        if isinstance(api_controller, ApiControllerBase):
-            api_controller.set_headers(**kwargs)
+        if isinstance(controller, BaseController):
+            controller.set_headers(**kwargs)
         else:
-            raise ValueError(api_controller.__class__.__name__, '必须是ApiControllerBase类的子类。')
+            raise ValueError(controller.__class__.__name__, '必须是BaseController的子类。')
 
     def __get_url(self, city):
         """
         构建url
         """
-        url = ApiInfo.sig_in_api['url'].format(city)
+        url = Home.check_weather['url'].format(city)
         return ''.join([self.base_url, url])
 
     def __send_request(self, api_controller, city):
@@ -51,9 +51,9 @@ class SigInApi(ApiBase):
 
 
 if __name__ == '__main__':
-    api = SigInApi('北京')  # 设置参数，使用默认请求头发送请求。
-    # api = SigInApi(ApiControllerV1(), '北京', token1='123456', token2='789')  # 添加请求头方式1。
-    # api = SigInApi(ApiControllerV1(), '北京', **{'token2': '333', 'token4': '444'})  # # 添加请求头方式2。
+    api = CheckWeatherApi('北京')  # 设置参数，使用默认请求头发送请求。
+    # api = CheckWeatherApi(V1Controller(), '北京', token1='123456', token2='789')  # 添加请求头方式1。
+    # api = CheckWeatherApi(ApiControllerV1(), '北京', **{'token2': '333', 'token4': '444'})  # # 添加请求头方式2。
     # print(api.get_status_code())  # 获取响应状态码,200
     print(str(api.get_request_headers()))  # 打印请求头
     # print(api.get_response_headers())  # 打印响应头
@@ -64,4 +64,3 @@ if __name__ == '__main__':
     # print(api.get_url()) # 打印url
     # print(api._response.request.headers)
     # print(type(api._response.request.body))
-    pass

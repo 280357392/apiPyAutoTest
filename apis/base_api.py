@@ -1,14 +1,15 @@
 import json
 import requests
 from urllib.parse import unquote
+
 from common.mysql_db import MysqlDB
 from config import RunConfig
 from common.pring_info import print_reques
 
 
-class ApiBase:
+class BaseApi:
     """
-        api公共方法
+    api公共方法
     """
 
     def __init__(self):
@@ -54,12 +55,7 @@ class ApiBase:
 
     def print_info(self):
         """
-        打印数据，格式：
-        GET url
-        headers: {...}
-        body:
-        None
-        {.....}
+        打印数据
         """
         request_body = self._response.request.body
         if type(request_body) == bytes:
@@ -87,6 +83,9 @@ class ApiBase:
     def read_data(sql, args=None):
         """
         查询数据库
+
+        :param sql: 查询语句
+        :param args: 条件列表[]
         :return: 查询成功时返回一列数据（元组），否则报错。
         """
         db = MysqlDB()
@@ -97,10 +96,3 @@ class ApiBase:
         else:
             assert False, '数据库未查询到相关数据。'
 
-
-if __name__ == '__main__':
-    # data = ApiBase.read_data("select classid,name from student where classid = %s;", [13])
-    # print(data)
-    # print(str(b'{"username": "13", "pwd": "\\u8d75\\u516d"}','utf-8').encode('utf-8').decode('unicode_escape'))
-    # print(str('{"username": "13", "pwd": "\\u8d75\\u516d"}').encode('utf-8').decode('unicode_escape'))
-    pass

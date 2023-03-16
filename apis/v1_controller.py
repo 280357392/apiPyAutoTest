@@ -1,8 +1,9 @@
-from apis.controller.api_controller_base import ApiControllerBase
 import requests
 
+from .base_controller import BaseController
 
-class ApiControllerV1(ApiControllerBase):
+
+class V1Controller(BaseController):
 
     def set_headers(self, **kwargs):
         self._headers.update(kwargs)
@@ -51,4 +52,3 @@ class ApiControllerV1(ApiControllerBase):
             },
         )
 
-    pass
